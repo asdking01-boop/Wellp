@@ -22,13 +22,13 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # تثبيت إصدار Gradle وتوليد ملف gradlew محلياً
-      - name: Setup Gradle Wrapper
+      # توليد ملف gradlew بنفس إصدار مشروعك (9.3.1)
+      - name: Generate Wrapper Script
         run: |
-          gradle wrapper --gradle-version 8.5
+          gradle wrapper --gradle-version 9.3.1
           chmod +x ./gradlew
 
-      # بناء الـ APK باستخدام الـ wrapper مباشرة وبدون كاش يعيق العملية
+      # بناء التطبيق مع تجاهل التحقق الإجباري إن وجد تعارض
       - name: Build Debug APK
         run: ./gradlew assembleDebug --no-daemon --stacktrace
 
