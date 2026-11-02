@@ -22,14 +22,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # تثبيت بيئة Gradle تلقائياً في السيرفر
+      # تثبيت إصدار Gradle 8.5 المتوافق مع إضافات أندرويد
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.5'
 
-      # البناء باستخدام أداة gradle المثبتة مباشرة (بدون الحاجة لملف gradlew)
+      # بناء ملف الـ APK
       - name: Build Debug APK
         run: gradle assembleDebug --stacktrace
 
+      # رفع ملف الـ APK للتحميل
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
