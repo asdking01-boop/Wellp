@@ -22,17 +22,14 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      # توليد ملف gradlew بنفس إصدار مشروعك (9.3.1)
       - name: Generate Wrapper Script
         run: |
-          gradle wrapper --gradle-version 9.3.1
+          gradle wrapper --gradle-version 8.7
           chmod +x ./gradlew
 
-      # بناء التطبيق مع تجاهل التحقق الإجباري إن وجد تعارض
       - name: Build Debug APK
-        run: ./gradlew assembleDebug --no-daemon --stacktrace
+        run: ./gradlew assembleDebug --stacktrace -Dorg.gradle.jvmargs="-Xmx4096m -XX:MaxMetaspaceSize=1024m"
 
-      # رفع ملف الـ APK
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
         with:
