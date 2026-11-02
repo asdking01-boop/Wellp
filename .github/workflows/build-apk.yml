@@ -1,0 +1,46 @@
+name: Build Android APK
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # يتيح زر "Run workflow" لتشغيل البناء يدوياً في أي وقت
+
+jobs:
+  build:
+    name: Build & Export APK
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. سحب كود المشروع من المستودع
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # 2. تثبيت بيئة Java (JDK 17)
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+          cache: 'gradle'
+
+      # 3. إعطاء صلاحية التنفيذ لملف gradlew (حل مشكلة Permission Denied الشائعة)
+      - name: Grant Execute Permission for Gradlew
+        run: chmod +x ./gradlew
+
+      # 4. بناء ملف APK بصيغة Debug
+      - name: Build Debug APK with Gradle
+        run: ./gradlew assembleDebug --stacktrace
+
+      # 5. رفع ملف الـ APK الناتج كـ Artifact لتنزيله مباشرة
+      - name: Upload Debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 7 # يحدد مدة بقاء الملف متاحاً للتحميل (7 أيام)
